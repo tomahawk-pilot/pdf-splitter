@@ -1,23 +1,17 @@
-import os
-from PyPDF2 import PdfFileReader, PdfFileWriter
+import PyPDF2
 
+input_pdf = PyPDF2.PdfFileReader(open("report.pdf", "rb"))
+num_of_pages_per_file = 20
+doc_counter = 0
+counter = 0
+output = PyPDF2.PdfFileWriter()
 
-def pdf_splitter(path):
-    fname = os.path.splitext(os.path.basename(path))[0]
-
-    pdf = PdfFileReader(path)
-    for page in range(pdf.getNumPages()):
-        pdf_writer = PdfFileWriter()
-        pdf_writer.addPage(pdf.getPage(page))
-
-        output_filename = '{}_page_{}.pdf'.format(
-            fname, page+1)
-
-        with open(output_filename, 'wb') as out:
-            pdf_writer.write(out)
-
-        print('Created: {}'.format(output_filename))
-
-if __name__ == '__main__':
-    path = 'report.pdf'
-    pdf_splitter(path)
+for i in range(input_pdf.numPages):
+    output.addPage(input_pdf.getPage(i))
+    counter = counter + 1
+    if counter == num_of_pages_per_file:
+        with open("report-%s.pdf" % doc_counter, "wb") as outputStream:
+            output.write(outputStream)
+            doc_counter = doc_counter + 1
+            counter = 0
+            output = PyPDF2.PdfFileWriter()
