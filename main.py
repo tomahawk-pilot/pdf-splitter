@@ -15,3 +15,8 @@ for i in range(input_pdf.numPages):
             doc_counter = doc_counter + 1
             counter = 0
             output = PyPDF2.PdfFileWriter()
+
+# Writing the last set of pages
+if output.getNumPages() > 0:
+    with open("report-%s.pdf" % doc_counter, "wb") as outputStream:
+        output.write(outputStream)
